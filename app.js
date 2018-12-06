@@ -1,0 +1,6 @@
+Model
+Pollo Peru: Lat: 38.9683883 lng: -77.3551893
+Bar Taco Lat: 38.9580539 lng: -77.36063690000003
+Super Pho Lat: 38.9214064 lng -77.41643879999998
+Barcelona Wine Bar 38.9580393, -77.3608544
+Pokehub 38.9589182, -77.3608266
