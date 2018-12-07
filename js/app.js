@@ -1,6 +1,9 @@
+/*
+//Use Express to serve local files to web page
 app.use("C:\Users\User\Documents\Udacity\map_project", express.static('/'));
+*/
 
-// Locations that will be used in Application. Food I enjoyed in DC! 
+// Locations that will be used in Application. Restaurants I enjoyed in DC! 
 var locationsdb = [
 {title: "Pollo Peru", location: {lat: 38.9683883, lng: -77.3551893}, address: "1675 Reston Pkwy, Reston, VA 20194"},
 {title: "Bar Taco",	location: {lat: 38.9580539, lng: -77.36063690000003}, address: "12021 Town Square St, Reston, VA 20190"},
@@ -18,10 +21,15 @@ function initMap() {
 
 var ViewModel = function() {
 	var self = this;
-	var markers = [];
+
+	this.locationList = ko.observableArray([]);
+	locationsdb.forEach(function(locationItem){
+		self.locationList.push( new Location(locationItem) );
+	})
 };
 
-var location = function(data) {
+//Create location Object as a knockout observable by passing in location data
+var Location = function(data) {
 	this.title = ko.observable(data.title);
 	this.location = ko.observable(data.location);
 	this.address = ko.observable(data.address);

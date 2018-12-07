@@ -15,9 +15,8 @@
   <body>
     <div class="row h-100">
     	<div class="col-3" id="listContainer">
-        <ul id="list">
-          <li> 1st location</li>
-          <li> 2nd location</li>
+        <ul data-bind="foreach: locationList" id="list">
+          <li data-bind="text: title"></li>
         </ul>      
       </div>
       <div class="col-9">
