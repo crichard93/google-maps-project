@@ -1,8 +1,3 @@
-/*
-//Use Express to serve local files to web page
-app.use("C:\Users\User\Documents\Udacity\map_project", express.static('/'));
-*/
-
 // Locations that will be used in Application. Restaurants I enjoyed in DC! 
 var locationsdb = [
 {title: "Pollo Peru", location: {lat: 38.9683883, lng: -77.3551893}, address: "1675 Reston Pkwy, Reston, VA 20194"},
@@ -11,24 +6,39 @@ var locationsdb = [
 {title: "Barcelona Wine Bar", location: {lat: 38.9580393, lng: -77.3608544}, address: "12023 Town Square St, Reston, VA 20190"},
 {title: "Pokehub", location: {lat: 38.9589182, lng: -77.3608266}, address: "11990 Market St, Reston, VA 20190"}
 ];
-
+var map;
+var markersArray = [];
 function initMap() {
-		var map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: 38.90, lng: -77.35},
-			zoom: 13,
-		});
+	//Create Map Object
+	map = new google.maps.Map(document.getElementById('map'), {
+		center: {lat: 38.90, lng: -77.35},
+		zoom: 11,
+	});
+//Create markers and add to markers array
+	for (i=0; i<locationsdb.length; i++) {
+		var marker = new self.google.maps.Marker({
+			position: locationsdb[i].location,
+			map: map,
+			title: locationsdb[i].title
+		})
+		markersArray.push(marker);
 	}
+//Create info windows
+}
 
 var ViewModel = function() {
 	var self = this;
-
+	//Create Observable Array for Locations
 	this.locationList = ko.observableArray([]);
 	locationsdb.forEach(function(locationItem){
-		self.locationList.push( new Location(locationItem) );
-	})
+		self.locationList.push( new Location(locationItem));
+		})
+	//When list is clicked, open Info Window on map
+	this.openInfoWindow = function(){};
+	//Filter Code here
 };
 
-//Create location Object as a knockout observable by passing in location data
+//Create Location Object as a knockout observable by passing in location data
 var Location = function(data) {
 	this.title = ko.observable(data.title);
 	this.location = ko.observable(data.location);
