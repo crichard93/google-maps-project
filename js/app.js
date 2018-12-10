@@ -1,10 +1,10 @@
 // Locations that will be used in Application. Restaurants I enjoyed in DC! 
 var locationsdb = [
-{title: "Pollo Peru", location: {lat: 38.9683883, lng: -77.3551893}, address: "1675 Reston Pkwy, Reston, VA 20194"},
-{title: "Bar Taco",	location: {lat: 38.9580539, lng: -77.36063690000003}, address: "12021 Town Square St, Reston, VA 20190"},
-{title: "Super Pho", location: {lat: 38.9214064, lng: -77.41643879999998}, address: "3065 Centreville Rd, Herndon, VA 20171"},
-{title: "Barcelona Wine Bar", location: {lat: 38.9580393, lng: -77.3608544}, address: "12023 Town Square St, Reston, VA 20190"},
-{title: "Pokehub", location: {lat: 38.9589182, lng: -77.3608266}, address: "11990 Market St, Reston, VA 20190"}
+{id: 0, title: "Pollo Peru", location: {lat: 38.9683883, lng: -77.3551893}, address: "1675 Reston Pkwy, Reston, VA 20194"},
+{id: 1, title: "Bar Taco",	location: {lat: 38.9580539, lng: -77.36063690000003}, address: "12021 Town Square St, Reston, VA 20190"},
+{id: 2, title: "Super Pho", location: {lat: 38.9214064, lng: -77.41643879999998}, address: "3065 Centreville Rd, Herndon, VA 20171"},
+{id: 3, title: "Barcelona Wine Bar", location: {lat: 38.9580393, lng: -77.3608544}, address: "12023 Town Square St, Reston, VA 20190"},
+{id: 4, title: "Pokehub", location: {lat: 38.9589182, lng: -77.3608266}, address: "11990 Market St, Reston, VA 20190"}
 ];
 var map;
 var markersArray = [];
@@ -39,13 +39,6 @@ function initMap() {
 		attachInfoWindow(marker);
 		markersArray.push(marker);
 	};
-	function populateInfoWindow(marker){
-		var infoWindow = new google.maps.InfoWindow({
-			content: marker.title
-		});
-		infoWindow.setPosition(marker.position);
-		infoWindow.open(map);
-	};
 }
 
 var ViewModel = function() {
@@ -55,6 +48,17 @@ var ViewModel = function() {
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
+	this.openInfoWindow = function(locationItem){
+		if (infowindow) {
+			infowindow.close();
+		}
+		console.log(locationItem.title());
+		infowindow = new google.maps.InfoWindow({
+			content: locationItem.title()
+		})
+		infowindow.open(map, markersArray[locationItem.id()]);
+	};
+
 	//Filter Code here
 };
 
@@ -63,6 +67,7 @@ var Location = function(data) {
 	this.title = ko.observable(data.title);
 	this.location = ko.observable(data.location);
 	this.address = ko.observable(data.address);
+	this.id = ko.observable(data.id)
 	this.display = ko.observable(true);
 };
 
