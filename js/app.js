@@ -8,22 +8,44 @@ var locationsdb = [
 ];
 var map;
 var markersArray = [];
+var infowindow;
 function initMap() {
 	//Create Map Object
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 38.90, lng: -77.35},
 		zoom: 11,
 	});
-//Create markers and add to markers array
+	//Create markers and infowindows, add to their arrays
 	for (i=0; i<locationsdb.length; i++) {
-		var marker = new self.google.maps.Marker({
+		var marker = new google.maps.Marker({
 			position: locationsdb[i].location,
 			map: map,
 			title: locationsdb[i].title
-		})
+		});
+
+
+		function attachInfoWindow(marker){
+			var text = marker.getTitle();
+			marker.addListener('click', function(){
+				if (infowindow) {
+					infowindow.close();
+				}
+				infowindow = new google.maps.InfoWindow({
+					content: text
+				})
+				infowindow.open(map, marker);
+			});
+		}
+		attachInfoWindow(marker);
 		markersArray.push(marker);
-	}
-//Create info windows
+	};
+	function populateInfoWindow(marker){
+		var infoWindow = new google.maps.InfoWindow({
+			content: marker.title
+		});
+		infoWindow.setPosition(marker.position);
+		infoWindow.open(map);
+	};
 }
 
 var ViewModel = function() {
@@ -33,8 +55,6 @@ var ViewModel = function() {
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
-	//When list is clicked, open Info Window on map
-	this.openInfoWindow = function(){};
 	//Filter Code here
 };
 
