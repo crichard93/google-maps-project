@@ -19,11 +19,24 @@ function initMap() {
 	for (i=0; i<locationsdb.length; i++) {
 		var marker = new google.maps.Marker({
 			position: locationsdb[i].location,
+			animation: google.maps.Animation.DROP,
 			map: map,
 			title: locationsdb[i].title
 		});
 
+		//Attach Bounce Animation to each marker on click
+		function attachBounce(marker) {
+			marker.addListener('click', function(){
+				markersArray.forEach(function(markerItem){
+					if (marker.getAnimation() == null) {
+					markerItem.setAnimation(null);
+					}
+				})
+				marker.setAnimation(google.maps.Animation.BOUNCE);
+			})
+		}
 
+		//Attach Infowindow to each marker on click
 		function attachInfoWindow(marker){
 			var text = marker.getTitle();
 			marker.addListener('click', function(){
@@ -36,6 +49,7 @@ function initMap() {
 				infowindow.open(map, marker);
 			});
 		}
+		attachBounce(marker);
 		attachInfoWindow(marker);
 		markersArray.push(marker);
 	};
@@ -48,6 +62,13 @@ var ViewModel = function() {
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
+
+	//When marker is clicked, bounce and open info window for location
+	this.clickMarkerEvent = function(locationItem){
+		self.openInfoWindow(locationItem);
+		self.bounceMarker(locationItem);
+	}
+	//Open info window given location item from list
 	this.openInfoWindow = function(locationItem){
 		if (infowindow) {
 			infowindow.close();
@@ -58,9 +79,18 @@ var ViewModel = function() {
 		})
 		infowindow.open(map, markersArray[locationItem.id()]);
 	};
+	//Bounce Marker given location item from list
+	this.bounceMarker = function(locationItem){
+		markersArray.forEach(function(markerItem){
+			if (markersArray[locationItem.id()].getAnimation() == null) {
+			markerItem.setAnimation(null);
+			}
+		})
+		markersArray[locationItem.id()].setAnimation(google.maps.Animation.BOUNCE);
+	};
+}
 
 	//Filter Code here
-};
 
 //Create Location Object as a knockout observable by passing in location data
 var Location = function(data) {

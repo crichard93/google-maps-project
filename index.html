@@ -16,7 +16,7 @@
     <div class="row h-100">
     	<div class="col-3" id="listContainer">
         <ul data-bind="foreach: locationList" id="list">
-          <li data-bind="text: title, click: $parent.openInfoWindow"></li>
+          <li data-bind="text: title, click: $parent.clickMarkerEvent"></li>
         </ul>      
       </div>
       <div class="col-9">
