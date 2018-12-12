@@ -10,16 +10,23 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <!--Local Stylesheet-->
 	 <link rel=stylesheet type=text/css href="style.css">
-    <title>Favorite DC Restaurants</title>
+    <title>Favorite NOVA Restaurants</title>
   </head>
   <body>
     <div class="row h-100">
     	<div class="col-3" id="listContainer">
+        <div class="col-12">
+          <h4>Favorite Northern Virginia Restaurants</h4>
+          <input type="text" placeholder="Filter Locations" name="filter">
+        </div>
         <ul data-bind="foreach: locationList" id="list">
           <li data-bind="text: title, click: $parent.clickMarkerEvent"></li>
         </ul>      
       </div>
       <div class="col-9">
+        <div class="col-12">
+          <i class="hamburgerIcon fas fa-bars"></i>
+        </div>
         <div id="map">
         </div>
   	  </div>

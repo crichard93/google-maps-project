@@ -102,3 +102,12 @@ var Location = function(data) {
 };
 
 ko.applyBindings(new ViewModel());
+/*
+https://api.yelp.com/v3/businesses/search?lattitude=38.9683883&longitude=-77.3551893
+Client ID
+5LhG2TGPRXx7Yvyc-nFrWA
+
+API Key
+yChNBdUthEwdZgQOE2idCz7K9yne0UAp3qyJwbvj9DWLQmwUNOSHTDmbe8k_M6UcTwxtuh6n7A2mIG4n69_ZGdkb-CffPkZFlIaMCqtaiBdhjrnFwmBPtwt1RTcQXHYx
+
+*/
