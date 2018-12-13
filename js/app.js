@@ -54,16 +54,43 @@ function initMap() {
 		markersArray.push(marker);
 	};
 }
-
+//Inititialize View Model
 var ViewModel = function() {
 	var self = this;
-	this.filterText = ko.observable("update");
+	//Variable to hold filter text 
+	this.filterText = ko.observable("");
 	//Create Observable Array for Locations
 	this.locationList = ko.observableArray([]);
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
 
+	//Construct Filtered Location List, Update markers, and ViewModel
+	this.filteredLocationList = ko.computed(function(){
+		var tempFilteredLocationList = ko.observableArray([]);
+		if (!self.filterText()){
+			console.log('Returning default list');
+			return self.locationList();
+		}
+		else{
+			//Clear list
+			tempFilteredLocationList([]);
+			self.locationList().forEach(function(locationItem){
+				if(locationItem.title().toLowerCase().includes(self.filterText().toLowerCase())) {
+					console.log('filtering this text');
+					console.log(self.filterText());
+					tempFilteredLocationList().push(locationItem);
+				}
+			});
+			//If Search returns results, return them, else print no results
+			if (tempFilteredLocationList()[0]) {				
+				return tempFilteredLocationList();
+			}
+			else {
+				console.log('Search provided no results');
+			}
+		}
+	});
 	//When marker is clicked, bounce and open info window for location
 	this.clickMarkerEvent = function(locationItem){
 		self.openInfoWindow(locationItem);
@@ -75,7 +102,6 @@ var ViewModel = function() {
 			infowindow.close();
 		}
 		//return test values
-		console.log(self.filterText());
 		infowindow = new google.maps.InfoWindow({
 			content: locationItem.title()
 		});
@@ -92,7 +118,6 @@ var ViewModel = function() {
 	};
 }
 
-	//Filter Code here
 
 //Create Location Object as a knockout observable by passing in location data
 var Location = function(data) {
