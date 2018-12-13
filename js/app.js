@@ -57,6 +57,7 @@ function initMap() {
 
 var ViewModel = function() {
 	var self = this;
+	this.filterText = ko.observable("update");
 	//Create Observable Array for Locations
 	this.locationList = ko.observableArray([]);
 	locationsdb.forEach(function(locationItem){
@@ -73,10 +74,11 @@ var ViewModel = function() {
 		if (infowindow) {
 			infowindow.close();
 		}
-		console.log(locationItem.title());
+		//return test values
+		console.log(self.filterText());
 		infowindow = new google.maps.InfoWindow({
 			content: locationItem.title()
-		})
+		});
 		infowindow.open(map, markersArray[locationItem.id()]);
 	};
 	//Bounce Marker given location item from list
