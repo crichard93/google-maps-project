@@ -9,6 +9,20 @@ var locationsdb = [
 var map;
 var markersArray = [];
 var infowindow;
+
+//Provide lat, lng coords and return photo
+function getFourSqarePhoto(location) {
+	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
+	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
+	fetch('https://api.foursquare.com/v2/venues/explore?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll=40.7243,-74.0018&query=coffee')
+	    .then(function() {
+	        // Code for handling API response
+	    })
+	    .catch(function() {
+	        // Code for handling errors
+	    });
+
+}
 function initMap() {
 	//Create Map Object
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -146,11 +160,9 @@ var Location = function(data) {
 
 ko.applyBindings(new ViewModel());
 /*
-https://api.yelp.com/v3/businesses/search?lattitude=38.9683883&longitude=-77.3551893
+FourSquare Keys
 Client ID
-5LhG2TGPRXx7Yvyc-nFrWA
-
-API Key
-yChNBdUthEwdZgQOE2idCz7K9yne0UAp3qyJwbvj9DWLQmwUNOSHTDmbe8k_M6UcTwxtuh6n7A2mIG4n69_ZGdkb-CffPkZFlIaMCqtaiBdhjrnFwmBPtwt1RTcQXHYx
-
+1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB
+Client Secret
+R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU
 */
