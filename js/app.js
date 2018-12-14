@@ -61,6 +61,7 @@ var ViewModel = function() {
 	this.filterText = ko.observable("");
 	//Create Observable Array for Locations
 	this.locationList = ko.observableArray([]);
+
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
@@ -70,6 +71,9 @@ var ViewModel = function() {
 		var tempFilteredLocationList = ko.observableArray([]);
 		if (!self.filterText()){
 			console.log('Returning default list');
+			markersArray.forEach(function(marker){
+				marker.setMap(map);
+			})
 			return self.locationList();
 		}
 		else{
@@ -83,14 +87,26 @@ var ViewModel = function() {
 				}
 			});
 			//If Search returns results, return them, else print no results
-			if (tempFilteredLocationList()[0]) {				
+			if (tempFilteredLocationList()[0]) {
+				//Update Markers
+				self.updateMarkers(tempFilteredLocationList());				
 				return tempFilteredLocationList();
 			}
 			else {
+				self.updateMarkers(tempFilteredLocationList());
 				console.log('Search provided no results');
 			}
 		}
-	});
+	}, this);
+	//Hide all markers, then show markers in marker array for each marker in filtered array
+	this.updateMarkers = function(locations){
+		markersArray.forEach(function(marker){
+			marker.setMap(null);
+		})
+		locations.forEach(function(locationItem){
+			markersArray[locationItem.id()].setMap(map);
+		})
+	};
 	//When marker is clicked, bounce and open info window for location
 	this.clickMarkerEvent = function(locationItem){
 		self.openInfoWindow(locationItem);
