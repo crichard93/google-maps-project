@@ -9,20 +9,33 @@ var locationsdb = [
 var map;
 var markersArray = [];
 var infowindow;
+var venue;
 
-//Provide lat, lng coords and return photo
-function getFourSqarePhoto(location) {
+//Provide lat, lng coords and return Venue ID
+function getFourSquareVenueID(latLng) {
 	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
 	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
-	fetch('https://api.foursquare.com/v2/venues/explore?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll=40.7243,-74.0018&query=coffee')
-	    .then(function() {
-	        // Code for handling API response
-	    })
-	    .catch(function() {
-	        // Code for handling errors
-	    });
+	var url = 'https://api.foursquare.com/v2/venues/search?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll='+latLng.lat+','+latLng.lng;
+	var venueID = $.getJSON(url, function(){
+	})
+	.done(function(data){
+		venue = data.response.venues[0].id;
+	})
+	.fail(function(){
+		alert('Error running Four Square API. Please refresh page to try again');
+	});
+	return venue;
+};
+
+
+function getFourSquarePhoto(venueID) {
 
 }
+
+//Provide Four Square Venue Id and return photo URL
+
+
+
 function initMap() {
 	//Create Map Object
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -54,9 +67,17 @@ function initMap() {
 		function attachInfoWindow(marker){
 			var text = marker.getTitle();
 			marker.addListener('click', function(){
+				//Close infowindow if it is already open
 				if (infowindow) {
 					infowindow.close();
 				}
+				//Convert lat lng coordinate from marker so they can be used in getFourSquareVenueID function
+				var latlng = marker.getPosition();
+				var lat = latlng.lat();
+				var lng = latlng.lng();
+				var coords = {lat: lat, lng: lng};
+				var venueid = getFourSquareVenueID(coords);
+				text = venueid;
 				infowindow = new google.maps.InfoWindow({
 					content: text
 				})
