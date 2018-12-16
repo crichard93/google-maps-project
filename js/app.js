@@ -9,27 +9,51 @@ var locationsdb = [
 var map;
 var markersArray = [];
 var infowindow;
-var venue;
-
-//Provide lat, lng coords and return Venue ID
-function getFourSquareVenueID(latLng) {
+//Update Four Square Venue ID to query photo
+function getFourSquareVenueID(latLng, marker, callback){
+	var venue;
 	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
 	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
-	var url = 'https://api.foursquare.com/v2/venues/search?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll='+latLng.lat+','+latLng.lng;
-	var venueID = $.getJSON(url, function(){
+	var idurl = 'https://api.foursquare.com/v2/venues/search?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll='+latLng.lat+','+latLng.lng;
+	var venueData = $.getJSON(idurl, function(){
 	})
 	.done(function(data){
 		venue = data.response.venues[0].id;
+		callback(venue, marker);
 	})
 	.fail(function(){
 		alert('Error running Four Square API. Please refresh page to try again');
 	});
-	return venue;
 };
 
 
-function getFourSquarePhoto(venueID) {
 
+//Update photo URL to place it in
+function getFourSquarePhoto(venueID, marker) {
+	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
+	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
+	var photourl = 'https://api.foursquare.com/v2/venues/'+venueID+'?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1';
+	var imgURL = "";
+	size = '300x300';
+	var venuePhotoData = $.getJSON(photourl, function(){
+	})
+	.done(function(data){
+		var imgURLPrefix = data.response.venue.photos.groups[1].items[0].prefix;
+		var imgURLSuffix = data.response.venue.photos.groups[1].items[0].suffix;
+		imgURL = imgURLPrefix + size + imgURLSuffix;
+		updateInfoWindowText(imgURL, marker);
+	})
+	.fail(function(){
+		alert('Error running Four Square API. Please refresh page to try again.')
+	});
+};
+
+function updateInfoWindowText(imgURL, marker){
+	var text = imgURL;
+	infowindow = new google.maps.InfoWindow({
+		content: text
+	});
+	infowindow.open(map, marker);
 }
 
 //Provide Four Square Venue Id and return photo URL
@@ -43,7 +67,7 @@ function initMap() {
 		zoom: 11,
 	});
 	//Create markers and infowindows, add to their arrays
-	for (i=0; i<locationsdb.length; i++) {
+	for (let i=0; i<locationsdb.length; i++) {
 		var marker = new google.maps.Marker({
 			position: locationsdb[i].location,
 			animation: google.maps.Animation.DROP,
@@ -76,12 +100,16 @@ function initMap() {
 				var lat = latlng.lat();
 				var lng = latlng.lng();
 				var coords = {lat: lat, lng: lng};
-				var venueid = getFourSquareVenueID(coords);
-				text = venueid;
+				getFourSquareVenueID(coords, marker, getFourSquarePhoto);
+				/*
+				var imgURL = getFourSquarePhoto(venueID);
+				console.log(imgURL);*/
+				/*
+				text = venueID;
 				infowindow = new google.maps.InfoWindow({
 					content: text
 				})
-				infowindow.open(map, marker);
+				infowindow.open(map, marker);*/
 			});
 		}
 		attachBounce(marker);
