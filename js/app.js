@@ -10,11 +10,14 @@ var map;
 var markersArray = [];
 var infowindow;
 //Update Four Square Venue ID to query photo
-function getFourSquareVenueID(latLng, marker, callback){
+function getFourSquareVenueID(marker, callback){
 	var venue;
+	var latlng = marker.getPosition();
+	var lat = latlng.lat();
+	var lng = latlng.lng();
 	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
 	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
-	var idurl = 'https://api.foursquare.com/v2/venues/search?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll='+latLng.lat+','+latLng.lng;
+	var idurl = 'https://api.foursquare.com/v2/venues/search?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1&ll='+lat+','+lng;
 	var venueData = $.getJSON(idurl, function(){
 	})
 	.done(function(data){
@@ -95,21 +98,7 @@ function initMap() {
 				if (infowindow) {
 					infowindow.close();
 				}
-				//Convert lat lng coordinate from marker so they can be used in getFourSquareVenueID function
-				var latlng = marker.getPosition();
-				var lat = latlng.lat();
-				var lng = latlng.lng();
-				var coords = {lat: lat, lng: lng};
-				getFourSquareVenueID(coords, marker, getFourSquarePhoto);
-				/*
-				var imgURL = getFourSquarePhoto(venueID);
-				console.log(imgURL);*/
-				/*
-				text = venueID;
-				infowindow = new google.maps.InfoWindow({
-					content: text
-				})
-				infowindow.open(map, marker);*/
+				getFourSquareVenueID(marker, getFourSquarePhoto);
 			});
 		}
 		attachBounce(marker);
@@ -180,11 +169,7 @@ var ViewModel = function() {
 		if (infowindow) {
 			infowindow.close();
 		}
-		//return test values
-		infowindow = new google.maps.InfoWindow({
-			content: locationItem.title()
-		});
-		infowindow.open(map, markersArray[locationItem.id()]);
+		getFourSquareVenueID(markersArray[locationItem.id()],getFourSquarePhoto);
 	};
 	//Bounce Marker given location item from list
 	this.bounceMarker = function(locationItem){
