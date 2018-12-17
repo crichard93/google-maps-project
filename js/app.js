@@ -1,4 +1,4 @@
-// Locations that will be used in Application. Restaurants I enjoyed in DC! 
+// Locations that will be used in Application Model. Restaurants I enjoyed in DC! 
 var locationsdb = [
 {id: 0, title: "Pollo Peru", location: {lat: 38.9683883, lng: -77.3551893}, address: "1675 Reston Pkwy, Reston, VA 20194"},
 {id: 1, title: "Bar Taco",	location: {lat: 38.9580539, lng: -77.36063690000003}, address: "12021 Town Square St, Reston, VA 20190"},
@@ -6,9 +6,14 @@ var locationsdb = [
 {id: 3, title: "Barcelona Wine Bar", location: {lat: 38.9580393, lng: -77.3608544}, address: "12023 Town Square St, Reston, VA 20190"},
 {id: 4, title: "Pokehub", location: {lat: 38.9589182, lng: -77.3608266}, address: "11990 Market St, Reston, VA 20190"}
 ];
+
+//Declare global variables for accessibility
 var map;
 var markersArray = [];
 var infowindow;
+
+//Helper functions
+
 //Update Four Square Venue ID to query photo
 function getFourSquareVenueID(marker, callback){
 	var venue;
@@ -31,13 +36,13 @@ function getFourSquareVenueID(marker, callback){
 
 
 
-//Update photo URL to place it in
+//Update photo URL to place it in InfoWindow
 function getFourSquarePhoto(venueID, marker) {
 	var client_secret = 'R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU';
 	var client_id = '1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB';
 	var photourl = 'https://api.foursquare.com/v2/venues/'+venueID+'?client_id='+client_id+'&client_secret='+client_secret+'&v=20180323&limit=1';
 	var imgURL = "";
-	size = '300x300';
+	size = '100x100';
 	var venuePhotoData = $.getJSON(photourl, function(){
 	})
 	.done(function(data){
@@ -51,25 +56,61 @@ function getFourSquarePhoto(venueID, marker) {
 	});
 };
 
+
+//Onclick, highlight the marker's list item by applying css style
+function attachHighlightListItem(marker){
+	var title = marker.getTitle();
+	marker.addListener('click', function(){
+		for (let j = 0; j<locationsdb.length; j++){
+			if (markersArray[i].getTitle() = title){
+				ViewModel.highlightListItem(ViewModel.locationList()[i]);
+			}
+		}
+	});
+
+}
+
+
+//Attach Bounce Animation to each marker on click
+function attachBounce(marker) {
+	marker.addListener('click', function(){
+		markersArray.forEach(function(markerItem){
+			if (marker.getAnimation() == null) {
+			markerItem.setAnimation(null);
+			}
+		})
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+	});
+}
+//Attach Infowindow to each marker on click
+function attachInfoWindow(marker){
+	marker.addListener('click', function(){
+		//Close infowindow if it is already open
+		if (infowindow) {
+			infowindow.close();
+		}
+		//Update infowindow with image, callback function needed to prioritize API call before infowindow is filled
+		getFourSquareVenueID(marker, getFourSquarePhoto);
+	});
+}
+//Pass in marker and imgURL to update InfoWindow
 function updateInfoWindowText(imgURL, marker){
-	var text = imgURL;
+	var title = marker.getTitle();
+	var text = "<h4>"+title+"</h4> <div class='col'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> </div>";
 	infowindow = new google.maps.InfoWindow({
 		content: text
 	});
 	infowindow.open(map, marker);
 }
 
-//Provide Four Square Venue Id and return photo URL
-
-
-
+//Initialize Google Maps objects separately from ViewModel
 function initMap() {
 	//Create Map Object
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 38.90, lng: -77.35},
 		zoom: 11,
 	});
-	//Create markers and infowindows, add to their arrays
+	//Create markers, add click events and push the markersArray
 	for (let i=0; i<locationsdb.length; i++) {
 		var marker = new google.maps.Marker({
 			position: locationsdb[i].location,
@@ -77,30 +118,6 @@ function initMap() {
 			map: map,
 			title: locationsdb[i].title
 		});
-
-		//Attach Bounce Animation to each marker on click
-		function attachBounce(marker) {
-			marker.addListener('click', function(){
-				markersArray.forEach(function(markerItem){
-					if (marker.getAnimation() == null) {
-					markerItem.setAnimation(null);
-					}
-				})
-				marker.setAnimation(google.maps.Animation.BOUNCE);
-			})
-		}
-
-		//Attach Infowindow to each marker on click
-		function attachInfoWindow(marker){
-			var text = marker.getTitle();
-			marker.addListener('click', function(){
-				//Close infowindow if it is already open
-				if (infowindow) {
-					infowindow.close();
-				}
-				getFourSquareVenueID(marker, getFourSquarePhoto);
-			});
-		}
 		attachBounce(marker);
 		attachInfoWindow(marker);
 		markersArray.push(marker);
@@ -121,6 +138,7 @@ var ViewModel = function() {
 	//Construct Filtered Location List, Update markers, and ViewModel
 	this.filteredLocationList = ko.computed(function(){
 		var tempFilteredLocationList = ko.observableArray([]);
+		//Return Unfiltered List if Filter Input is Empty
 		if (!self.filterText()){
 			console.log('Returning default list');
 			markersArray.forEach(function(marker){
@@ -163,6 +181,10 @@ var ViewModel = function() {
 	this.clickMarkerEvent = function(locationItem){
 		self.openInfoWindow(locationItem);
 		self.bounceMarker(locationItem);
+		self.highlightListItem(locationItem);
+	}
+	this.highlightListItem = function(locationItem){
+
 	}
 	//Open info window given location item from list
 	this.openInfoWindow = function(locationItem){

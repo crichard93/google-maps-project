@@ -20,7 +20,7 @@
           <input type="text" placeholder="Filter Locations" data-bind="textInput: filterText">
         </div>
         <ul data-bind="foreach: filteredLocationList" id="list">
-          <li id="locations" data-bind="text: title, click: $parent.clickMarkerEvent"></li>
+          <li class="location" data-bind="text: title, click: $parent.clickMarkerEvent, attr: { id: id() }"></li>
         </ul>   
       </div>
       <div class="col">
