@@ -62,8 +62,8 @@ function attachHighlightListItem(marker){
 	var title = marker.getTitle();
 	marker.addListener('click', function(){
 		for (let j = 0; j<locationsdb.length; j++){
-			if (markersArray[i].getTitle() = title){
-				ViewModel.highlightListItem(ViewModel.locationList()[i]);
+			if (markersArray[j].getTitle() == title){
+				ViewModel.highlightListItem(this.locationList()[j]);
 			}
 		}
 	});
@@ -82,6 +82,8 @@ function attachBounce(marker) {
 		marker.setAnimation(google.maps.Animation.BOUNCE);
 	});
 }
+
+
 //Attach Infowindow to each marker on click
 function attachInfoWindow(marker){
 	marker.addListener('click', function(){
@@ -118,11 +120,14 @@ function initMap() {
 			map: map,
 			title: locationsdb[i].title
 		});
+		//attachHighlightListItem(marker);
 		attachBounce(marker);
-		attachInfoWindow(marker);
+		//attachInfoWindow(marker);
 		markersArray.push(marker);
 	};
 }
+
+
 //Inititialize View Model
 var ViewModel = function() {
 	var self = this;
@@ -130,10 +135,10 @@ var ViewModel = function() {
 	this.filterText = ko.observable("");
 	//Create Observable Array for Locations
 	this.locationList = ko.observableArray([]);
-
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
 		})
+
 
 	//Construct Filtered Location List, Update markers, and ViewModel
 	this.filteredLocationList = ko.computed(function(){
@@ -164,10 +169,11 @@ var ViewModel = function() {
 			}
 			else {
 				self.updateMarkers(tempFilteredLocationList());
-				console.log('Search provided no results');
 			}
 		}
 	}, this);
+	
+
 	//Hide all markers, then show markers in marker array for each marker in filtered array
 	this.updateMarkers = function(locations){
 		markersArray.forEach(function(marker){
@@ -177,15 +183,34 @@ var ViewModel = function() {
 			markersArray[locationItem.id()].setMap(map);
 		})
 	};
+	
+
 	//When marker is clicked, bounce and open info window for location
 	this.clickMarkerEvent = function(locationItem){
-		self.openInfoWindow(locationItem);
+		//self.openInfoWindow(locationItem);
 		self.bounceMarker(locationItem);
 		self.highlightListItem(locationItem);
 	}
-	this.highlightListItem = function(locationItem){
+	
 
+	this.highlightListItem = function(locationItem){
+		//Toggle off highlight
+		var locations = document.getElementsByClassName("location");
+		locations = Array.from(locations);
+		locations.forEach(function(element){
+			element.classList.remove("highlight");
+		})
+		//Turn highlight on for select locationItem, reference by id
+		locations.forEach(function(element){
+			if (element.id == locationItem.id()){
+				console.log("the element id is:" + element.id);
+				console.log("the locationitemid is:" + locationItem.id());
+				element.classList.toggle("highlight");
+			}
+		});
 	}
+	
+
 	//Open info window given location item from list
 	this.openInfoWindow = function(locationItem){
 		if (infowindow) {
@@ -193,6 +218,8 @@ var ViewModel = function() {
 		}
 		getFourSquareVenueID(markersArray[locationItem.id()],getFourSquarePhoto);
 	};
+	
+
 	//Bounce Marker given location item from list
 	this.bounceMarker = function(locationItem){
 		markersArray.forEach(function(markerItem){
@@ -201,7 +228,7 @@ var ViewModel = function() {
 			}
 		})
 		markersArray[locationItem.id()].setAnimation(google.maps.Animation.BOUNCE);
-	};
+	}
 }
 
 

@@ -6,9 +6,9 @@ body {
     overflow: visible;
   }
 
-  .hamburgerIcon{
-  	cursor: pointer;
-  }
+.hamburgerIcon{
+ 	cursor: pointer;
+}
 
 .min-h-100 {
 	min-height: 100%;
@@ -22,4 +22,8 @@ body {
 
 #map{ 
 	height: 100%;
+}
+
+.highlight{
+background-color: #FFFF00;
 }
