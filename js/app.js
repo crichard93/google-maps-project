@@ -11,6 +11,7 @@ var locationsdb = [
 var map;
 var markersArray = [];
 var infowindow;
+var vm;
 
 //Helper functions
 
@@ -63,7 +64,7 @@ function attachHighlightListItem(marker){
 	marker.addListener('click', function(){
 		for (let j = 0; j<locationsdb.length; j++){
 			if (markersArray[j].getTitle() == title){
-				ViewModel.highlightListItem(this.locationList()[j]);
+				vm.ViewModel.highlightListItem(vm.ViewModel.locationList()[j]);
 			}
 		}
 	});
@@ -120,7 +121,7 @@ function initMap() {
 			map: map,
 			title: locationsdb[i].title
 		});
-		//attachHighlightListItem(marker);
+		attachHighlightListItem(marker);
 		attachBounce(marker);
 		//attachInfoWindow(marker);
 		markersArray.push(marker);
@@ -145,7 +146,6 @@ var ViewModel = function() {
 		var tempFilteredLocationList = ko.observableArray([]);
 		//Return Unfiltered List if Filter Input is Empty
 		if (!self.filterText()){
-			console.log('Returning default list');
 			markersArray.forEach(function(marker){
 				marker.setMap(map);
 			})
@@ -156,8 +156,6 @@ var ViewModel = function() {
 			tempFilteredLocationList([]);
 			self.locationList().forEach(function(locationItem){
 				if(locationItem.title().toLowerCase().includes(self.filterText().toLowerCase())) {
-					console.log('filtering this text');
-					console.log(self.filterText());
 					tempFilteredLocationList().push(locationItem);
 				}
 			});
@@ -203,8 +201,6 @@ var ViewModel = function() {
 		//Turn highlight on for select locationItem, reference by id
 		locations.forEach(function(element){
 			if (element.id == locationItem.id()){
-				console.log("the element id is:" + element.id);
-				console.log("the locationitemid is:" + locationItem.id());
 				element.classList.toggle("highlight");
 			}
 		});
@@ -241,7 +237,8 @@ var Location = function(data) {
 	this.display = ko.observable(true);
 };
 
-ko.applyBindings(new ViewModel());
+vm = {ViewModel: new ViewModel() };
+ko.applyBindings(vm.ViewModel);
 /*
 FourSquare Keys
 Client ID
