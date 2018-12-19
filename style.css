@@ -16,7 +16,7 @@ body {
     font-family: sans-serif, arial, verdana, "times new roman";
   }
 
-  ul {
+ul {
   	list-style-type: none;
   	padding: 0 1em 0 1em;
   }
@@ -51,6 +51,10 @@ input{
 }
 
 #map{ 
+	height: 100%;
+}
+
+#listContainer{
 	height: 100%;
 }
 
