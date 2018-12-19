@@ -1,3 +1,10 @@
+/*Colors
+Stormy #494E6B
+Cloud #98878F
+Sunset #985E6D
+Evening #192231
+*/
+
 html,
 body {
     height: 100%;
@@ -5,7 +12,7 @@ body {
     padding: 0;
     overflow: visible;
     color: white;
-    background-color: #494E6B;
+    background-color: #192231;
     font-family: sans-serif, arial, verdana, "times new roman";
   }
 
@@ -14,8 +21,8 @@ body {
   	padding: 0 1em 0 1em;
   }
 
-h4{
-	/*color: #98878F;*/
+h3{
+	color: #985E6D;
 }
 
 input{
@@ -23,8 +30,12 @@ input{
 }
 
 .location{
-	background-color: #985E6D;
+	background-color: #494E6B;
 	border-color: #494E6B;
+	cursor: pointer;
+	margin: 5px 0 5px 0;
+	border-radius: 10px;
+	padding: 10px;
 }
 .hamburgerIcon{
  	cursor: pointer;
@@ -39,6 +50,6 @@ input{
 }
 
 .highlight{
-	background-color: #FFFF00;
+	background-color: #985E6D;
 }
 

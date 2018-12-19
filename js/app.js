@@ -100,7 +100,7 @@ function attachInfoWindow(marker){
 //Pass in marker and imgURL to update InfoWindow
 function updateInfoWindowText(imgURL, marker){
 	var title = marker.getTitle();
-	var text = "<h4>"+title+"</h4> <div class='col'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> <p class='infoWindowText'>Image provided by Foursquare Places API</p> </div>";
+	var text = "<h3>"+title+"</h3> <div class='col-12'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> <p class='infoWindowText'>Image provided by Foursquare Places API</p> </div>";
 	infowindow.setContent(text);
 	infowindow.open(map, marker);
 }
@@ -113,8 +113,9 @@ function initMap() {
 		center: {lat: 38.90, lng: -77.35},
 		zoom: 11,
 	});
+	//Create Infowindow that will be updated when marker is clicked
 	infowindow = new google.maps.InfoWindow({
-		maxWidth: 350
+		maxWidth: 300
 	})
 	//Create markers, add click events and push the markersArray
 	for (let i=0; i<locationsdb.length; i++) {
