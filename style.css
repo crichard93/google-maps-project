@@ -26,7 +26,12 @@ h3{
 }
 
 input{
-	width: 100%;
+	width: 90%;
+	border-radius: 10px;
+}
+
+.filterIcon{
+	width: 5%;
 }
 
 .location{
