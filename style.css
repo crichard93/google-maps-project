@@ -4,8 +4,28 @@ body {
     margin: 0;
     padding: 0;
     overflow: visible;
+    color: white;
+    background-color: #494E6B;
+    font-family: sans-serif, arial, verdana, "times new roman";
   }
 
+  ul {
+  	list-style-type: none;
+  	padding: 0 1em 0 1em;
+  }
+
+h4{
+	/*color: #98878F;*/
+}
+
+input{
+	width: 100%;
+}
+
+.location{
+	background-color: #985E6D;
+	border-color: #494E6B;
+}
 .hamburgerIcon{
  	cursor: pointer;
 }
@@ -14,16 +34,11 @@ body {
 	min-height: 100%;
 }
 
-
-#listContainer{
-	height: 100%;
-}
-
-
 #map{ 
 	height: 100%;
 }
 
 .highlight{
-background-color: #FFFF00;
+	background-color: #FFFF00;
 }
+

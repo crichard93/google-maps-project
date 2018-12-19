@@ -11,11 +11,10 @@ var locationsdb = [
 var map;
 var markersArray = [];
 var infowindow;
-var vm;
 
 //Helper functions
 
-//Update Four Square Venue ID to query photo
+//Update Four Square Venue ID to query photo, callback is GetFourSquarePhoto
 function getFourSquareVenueID(marker, callback){
 	var venue;
 	var latlng = marker.getPosition();
@@ -33,7 +32,7 @@ function getFourSquareVenueID(marker, callback){
 	.fail(function(){
 		alert('Error running Four Square API. Please refresh page to try again');
 	});
-};
+}
 
 
 
@@ -62,9 +61,9 @@ function getFourSquarePhoto(venueID, marker) {
 function attachHighlightListItem(marker){
 	var title = marker.getTitle();
 	marker.addListener('click', function(){
-		for (let j = 0; j<locationsdb.length; j++){
-			if (markersArray[j].getTitle() == title){
-				vm.ViewModel.highlightListItem(vm.ViewModel.locationList()[j]);
+		for (let i = 0; i<locationsdb.length; i++){
+			if (markersArray[i].getTitle() == title){
+				vm.ViewModel.highlightListItem(vm.ViewModel.locationList()[i]);
 			}
 		}
 	});
@@ -96,15 +95,16 @@ function attachInfoWindow(marker){
 		getFourSquareVenueID(marker, getFourSquarePhoto);
 	});
 }
+
+
 //Pass in marker and imgURL to update InfoWindow
 function updateInfoWindowText(imgURL, marker){
 	var title = marker.getTitle();
-	var text = "<h4>"+title+"</h4> <div class='col'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> </div>";
-	infowindow = new google.maps.InfoWindow({
-		content: text
-	});
+	var text = "<h4>"+title+"</h4> <div class='col'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> <p class='infoWindowText'>Image provided by Foursquare Places API</p> </div>";
+	infowindow.setContent(text);
 	infowindow.open(map, marker);
 }
+
 
 //Initialize Google Maps objects separately from ViewModel
 function initMap() {
@@ -113,6 +113,9 @@ function initMap() {
 		center: {lat: 38.90, lng: -77.35},
 		zoom: 11,
 	});
+	infowindow = new google.maps.InfoWindow({
+		maxWidth: 350
+	})
 	//Create markers, add click events and push the markersArray
 	for (let i=0; i<locationsdb.length; i++) {
 		var marker = new google.maps.Marker({
@@ -123,7 +126,7 @@ function initMap() {
 		});
 		attachHighlightListItem(marker);
 		attachBounce(marker);
-		//attachInfoWindow(marker);
+		attachInfoWindow(marker);
 		markersArray.push(marker);
 	};
 }
@@ -185,7 +188,7 @@ var ViewModel = function() {
 
 	//When marker is clicked, bounce and open info window for location
 	this.clickMarkerEvent = function(locationItem){
-		//self.openInfoWindow(locationItem);
+		self.openInfoWindow(locationItem);
 		self.bounceMarker(locationItem);
 		self.highlightListItem(locationItem);
 	}
@@ -237,12 +240,7 @@ var Location = function(data) {
 	this.display = ko.observable(true);
 };
 
-vm = {ViewModel: new ViewModel() };
+
+//Store viewmodel in vm to reference its function outside of viewmodel
+var vm = {ViewModel: new ViewModel() };
 ko.applyBindings(vm.ViewModel);
-/*
-FourSquare Keys
-Client ID
-1FNXGRY10KVF2DVQUHFOYTWJHL3Q2F23YN5SA53EUW4KXRMB
-Client Secret
-R22OL3UWPL1KYSK2XI0CZDZLKCQX4QOPUENZ0HOYV0R4FPVU
-*/
