@@ -13,7 +13,7 @@
     <title>Favorite NOVA Restaurants</title>
   </head>
   <body>
-    <div class="row h-100">
+    <div class="row no-gutters h-100">
     	<div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 col-5 collapse show" id="listContainer">
         <div class="col-12">
           <h4>Favorite Northern Virginia Restaurants</h4>
@@ -24,11 +24,13 @@
           <li class="location" data-bind="text: title, click: $parent.clickMarkerEvent, attr: { id: id() }"></li>
         </ul>   
       </div>
-      <div class="col-lg-9 col-md-8 col-sm-7 col-xs-7 col-7">
-        <div class="col">
+      <div class="col">
+        <div class="col-lg-12">
           <i class="hamburgerIcon fas fa-bars" data-toggle="collapse" href="#listContainer"></i>
         </div>
-        <div id="map">
+        <div class="col mapContainer">
+          <div id="map">
+          </div>
         </div>
   	  </div>
     </div>
