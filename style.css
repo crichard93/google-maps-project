@@ -10,7 +10,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: visible;
+    overflow: hidden;
     color: white;
     background-color: #192231;
     font-family: sans-serif, arial, verdana, "times new roman";
