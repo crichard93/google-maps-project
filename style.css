@@ -30,6 +30,10 @@ input{
 	border-radius: 10px;
 }
 
+p {
+	color: #985E6D;
+}
+
 .filterIcon{
 	width: 5%;
 }
