@@ -14,9 +14,16 @@ var infowindow;
 
 //Helper functions
 
+function alertError(){
+	alert('Error loading Google Maps API. Please refresh page.')
+}
+
 //Update Four Square Venue ID to query photo, callback is GetFourSquarePhoto
 function getFourSquareVenueID(marker, callback){
 	var venue;
+	if (!marker) {
+		alertError();
+	}
 	var latlng = marker.getPosition();
 	var lat = latlng.lat();
 	var lng = latlng.lng();
@@ -46,9 +53,11 @@ function getFourSquarePhoto(venueID, marker) {
 	var venuePhotoData = $.getJSON(photourl, function(){
 	})
 	.done(function(data){
-		var imgURLPrefix = data.response.venue.photos.groups[1].items[0].prefix;
-		var imgURLSuffix = data.response.venue.photos.groups[1].items[0].suffix;
-		imgURL = imgURLPrefix + size + imgURLSuffix;
+		if (typeof data.response.venue.photos.groups[1].items[0].prefix !== 'undefined') {
+			var imgURLPrefix = data.response.venue.photos.groups[1].items[0].prefix;
+			var imgURLSuffix = data.response.venue.photos.groups[1].items[0].suffix;
+			imgURL = imgURLPrefix + size + imgURLSuffix;
+		}
 		updateInfoWindowText(imgURL, marker);
 	})
 	.fail(function(){
@@ -100,7 +109,13 @@ function attachInfoWindow(marker){
 //Pass in marker and imgURL to update InfoWindow
 function updateInfoWindowText(imgURL, marker){
 	var title = marker.getTitle();
-	var text = "<h3>"+title+"</h3> <div class='col-12'> <img class='img-fluid' src="+imgURL+" alt='Food Item not found'> <p class='infoWindowText'>Image provided by Foursquare Places API</p> </div>";
+	var text = "";
+	if (imgURL){
+		text = `<h3>${title}</h3> <div class='col-12'> <img class='img-fluid' src=${imgURL} alt='Food Item not found'> <p class='infoWindowText'>Image provided by Foursquare Places API</p> </div>`;
+	}
+	else {
+		text = `<h3>${title}</h3> <div class='col-12'> <p>Error retrieving phot from Foursquare API</p> </div>`;
+	}
 	infowindow.setContent(text);
 	infowindow.open(map, marker);
 }
@@ -142,7 +157,7 @@ var ViewModel = function() {
 	this.locationList = ko.observableArray([]);
 	locationsdb.forEach(function(locationItem){
 		self.locationList.push( new Location(locationItem));
-		})
+	})
 
 
 	//Construct Filtered Location List, Update markers, and ViewModel
@@ -179,12 +194,17 @@ var ViewModel = function() {
 	//Hide all markers, then show markers in marker array for each marker in filtered array
 	this.updateMarkers = function(locations){
 		markersArray.forEach(function(marker){
-			marker.setMap(null);
-		})
+			if ( typeof marker !== 'undefined'){
+				marker.setMap(null);
+			}
+			else {
+			alertError();
+			} 
+		});
 		locations.forEach(function(locationItem){
 			markersArray[locationItem.id()].setMap(map);
 		})
-	};
+	}
 	
 
 	//When marker is clicked, bounce and open info window for location
