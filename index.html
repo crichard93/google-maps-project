@@ -21,7 +21,7 @@
           <i class="fas fa-filter filterIcon"></i>
         </div>
         <ul data-bind="foreach: filteredLocationList" id="list">
-          <li class="location" data-bind="text: title, click: $parent.clickMarkerEvent, attr: { id: id() }"></li>
+          <li class="location" data-bind="css: { highlight: highlight() == true}, text: title, click: $parent.clickMarkerEvent, attr: { id: id() }"></li>
         </ul>   
       </div>
       <div class="col">

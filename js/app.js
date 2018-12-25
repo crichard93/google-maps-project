@@ -72,7 +72,7 @@ function attachHighlightListItem(marker){
 	marker.addListener('click', function(){
 		for (let i = 0; i<locationsdb.length; i++){
 			if (markersArray[i].getTitle() == title){
-				vm.ViewModel.highlightListItem(vm.ViewModel.locationList()[i]);
+				vm.ViewModel.toggleHighlight(vm.ViewModel.locationList()[i]);
 			}
 		}
 	});
@@ -211,25 +211,16 @@ var ViewModel = function() {
 	this.clickMarkerEvent = function(locationItem){
 		self.openInfoWindow(locationItem);
 		self.bounceMarker(locationItem);
-		self.highlightListItem(locationItem);
+		self.toggleHighlight(locationItem);
 	}
-	
 
-	this.highlightListItem = function(locationItem){
-		//Toggle off highlight
-		var locations = document.getElementsByClassName("location");
-		locations = Array.from(locations);
-		locations.forEach(function(element){
-			element.classList.remove("highlight");
-		})
-		//Turn highlight on for select locationItem, reference by id
-		locations.forEach(function(element){
-			if (element.id == locationItem.id()){
-				element.classList.toggle("highlight");
-			}
+	this.toggleHighlight = function(locationItem){
+		//First set all highlights to false
+		self.filteredLocationList().forEach(function(item){
+			item.highlight(false);
 		});
-	}
-	
+		locationItem.highlight(true);
+	}	
 
 	//Open info window given location item from list
 	this.openInfoWindow = function(locationItem){
@@ -257,11 +248,11 @@ var Location = function(data) {
 	this.title = ko.observable(data.title);
 	this.location = ko.observable(data.location);
 	this.address = ko.observable(data.address);
-	this.id = ko.observable(data.id)
-	this.display = ko.observable(true);
+	this.id = ko.observable(data.id);
+	this.highlight = ko.observable(false);
 };
 
 
 //Store viewmodel in vm to reference its function outside of viewmodel
-var vm = {ViewModel: new ViewModel() };
+var vm = { ViewModel: new ViewModel() };
 ko.applyBindings(vm.ViewModel);
