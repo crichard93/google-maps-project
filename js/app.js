@@ -166,7 +166,7 @@ var ViewModel = function() {
 		//Return Unfiltered List if Filter Input is Empty
 		if (!self.filterText()){
 			markersArray.forEach(function(marker){
-				marker.setMap(map);
+				marker.setVisible(true);
 			})
 			return self.locationList();
 		}
@@ -195,14 +195,14 @@ var ViewModel = function() {
 	this.updateMarkers = function(locations){
 		markersArray.forEach(function(marker){
 			if ( typeof marker !== 'undefined'){
-				marker.setMap(null);
+				marker.setVisible(false);
 			}
 			else {
 			alertError();
 			} 
 		});
 		locations.forEach(function(locationItem){
-			markersArray[locationItem.id()].setMap(map);
+			markersArray[locationItem.id()].setVisible(true);
 		})
 	}
 	
